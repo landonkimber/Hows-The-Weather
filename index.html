@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How's The Weather??</title>
+
+    <!-- style files -->
+    <link rel="stylesheet" href="./assets/reset.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bulma@0.9.3/css/bulma.min.css">
+    <link rel="stylesheet" href="./assets/style.css">
+
+    <script
+      src="https://cdn.jsdelivr.net/npm/dayjs@1.11.3/dayjs.min.js"
+      integrity="sha256-iu/zLUB+QgISXBLCW/mcDi/rnf4m4uEDO0wauy76x7U="
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://code.jquery.com/jquery-3.6.4.min.js"></script>
+    
+</head>
+
+<body>
+    <header class="hero">
+        <div class="hero-body">
+            <h1>
+                How's The Weather??
+            </h1>
+        </div>
+    </header>
+
+    <main class="section columns">
+        <section class="column is-3 is-narrow">
+            <h2 class="title">Search</h2>
+            <div class="field">
+                <div class="control">
+                    <input class="input" type="text" placeholder="Type your city here!">
+                </div>
+                <button class="button is-fullwidth" id="fetch-button">Press to search</button>
+            </div>
+            <h2 class="title">History</h2>
+            <ul>
+                <li><button class="button is-fullwidth">Ogden</button></li>
+                <li><button class="button is-fullwidth">Millwocky</button></li>
+            </ul>
+        </section>
+
+        <section class="column is-9">
+            <!-- Adjust the width of the second box as needed -->
+            <h2 class="title">New York City, NY</h2>
+            <p id="data"></p>
+        </section>
+
+    </main>
+</body>
+<script src="./assets/script.js"></script>
+</html>

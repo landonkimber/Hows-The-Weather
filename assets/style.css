@@ -1,0 +1,12 @@
+.hero {
+    background-color: rgb(46, 46, 123);
+}
+
+h1 {
+    font-size: 4vh;
+    color: aliceblue;
+}
+
+.button {
+    margin: 1%;
+}
