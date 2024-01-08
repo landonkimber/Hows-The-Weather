@@ -1,5 +1,6 @@
 /*************************************** */
 // const dayjs = require('dayjs');
+
 /********************************** */
 var apiKey = '35a61cefc31c8f6c748fd7b5c38b3247';
 var lat;
@@ -63,9 +64,9 @@ async function getApi(lat, lon) {
 
         for (i = 0; i < data.list.length; i++) {
             forecastDate = getDate(data.list[i].dt);
-            if ((forecastDate > currentDate || forecastDate <= 5) && (!datesForecasted.includes(forecastDate))) {
-                datesForecasted.push(forecastDate);
-            }
+            // if ((forecastDate > currentDate || forecastDate <= 5) && (!datesForecasted.includes(forecastDate))) {
+            datesForecasted.push(forecastDate);
+            // }
         }
         let perDayData = {};
 
@@ -245,7 +246,78 @@ function averageArrayRounded(array) {
     }
     return Math.round(sum / (array.length));
 }
+// ****************************** Display Function ********************
+async function displayWeather(userEntry) {
+    for (var i = 0; i < 5; i++) {
+        $('#box-' + i).remove();
+    }
 
+    if (userEntry) {
+        $('#currentCity').text(`Now showing weather for ${userEntry}`);
+
+        if (!searchHistory.includes(userEntry)) {
+            searchHistory.push(userEntry);
+            localStorage.setItem('Search History', JSON.stringify(searchHistory));
+            showHistory();
+        }
+        $('.input').val('')
+
+        try {
+            const weatherDays = await getCoords(userEntry)
+            console.log(`WeatherDaysFinal : ${weatherDays}`);
+            console.log(`Current Weather : ${weatherDays[2].desc}`);
+            //Fill the weather boxes
+
+            var weatherBox = $('#weather-box');
+            for (var i = 0; i < 5; i++) {
+                var displayBox = $('<div>').addClass('display-box').attr('id', 'box-' + i);
+                weatherBox.append(displayBox);
+            }
+
+
+            for (var i = 0; i < 5; i++) {
+
+                switch (weatherDays[i].desc) {
+                    case "clear sky": var icon = '<img src="./assets/images/sun.svg" alt="clear sky" id="icon">'; break;
+                    case "few clouds": var icon = '<img src="./assets/images/cloud.svg" alt="few clouds" id="icon">'; break;
+                    case "scattered clouds": var icon = '<img src="./assets/images/cloud.svg" alt="scattered clouds" id="icon">'; break;
+                    case "broken clouds": var icon = '<img src="./assets/images/cloud.svg" alt="broken clouds" id="icon">'; break;
+                    case "shower rain": var icon = '<img src="./assets/images/cloud-rain.svg" alt="shower rain" id="icon">'; break;
+                    case "rain": var icon = '<img src="./assets/images/cloud-drizzle.svg" alt="rain" id="icon">'; break;
+                    case "thunderstorm": var icon = '<img src="./assets/images/cloud-lightning.svg" alt="thunderstorm" id="icon">'; break;
+                    case "light snow": var icon = '<img src="./assets/images/cloud-snow.svg" alt="snow" id="icon">'; break;
+                    case "snow": var icon = '<img src="./assets/images/cloud-snow.svg" alt="snow" id="icon">'; break;
+                    case "mist": var icon = '<img src="./assets/images/cloud.svg" alt="mist" id="icon">'; break;
+                    default: break;
+                }
+
+                var displayDate = dayjs().add(i, 'day').format('MMMM D, YYYY');
+                if (i == 0) {
+                    var annoyingEnglish = "Currently";
+                } else { var annoyingEnglish = "Expect" }
+
+                $('#box-' + i).html(`
+            <div id="image-container">
+            ${icon}<br>
+            </div>
+
+            <div><br><br>
+            Date : ${displayDate}<br>
+            ${annoyingEnglish}: ${weatherDays[i].desc}<br>
+            High Temp: ${weatherDays[i].high}°F<br>
+            Low Temp: ${weatherDays[i].low}°F<br>
+            Humidity: ${weatherDays[i].humidity}%
+            </div>
+            `);
+            }
+
+        } catch (error) {
+            console.error('Error:', error);
+        }
+    } else {
+        $('#currentCity').text(`Please type in a city name into the search box.`);
+    }
+}
 
 // ****************************** Document Stuff **********************
 if (!localStorage.getItem('Search History')) {
@@ -283,25 +355,12 @@ function showHistory() {
 console.log(JSON.parse(localStorage.getItem('Search History')))
 showHistory();
 
-$('#fetch-button').click(async function () {
-    let userEntry = $('.input').val();
-    if (userEntry) {
-        $('#currentCity').text(`Now Showing for ${userEntry}`);
-        if (!searchHistory.includes(userEntry)) {
-            searchHistory.push(userEntry);
-            localStorage.setItem('Search History', JSON.stringify(searchHistory));
-            showHistory();
-        }
-        $('.input').val('')
+$('#fetch-button').click(function () {
+    userEntry = $('.input').val();
+    displayWeather(userEntry);
+});
 
-        try {
-            const weatherDays = await getCoords(userEntry)
-            console.log(`WeatherDaysFinal : ${weatherDays}`);
-            console.log(`Current Weather : ${weatherDays[0].desc}`)
-
-
-        } catch (error) {
-            console.error('Error:', error);
-        }
-    }
+$(document).on('click', '.historyLi', function () {
+    userEntry = $(this).text().trim();
+    displayWeather(userEntry);
 });
