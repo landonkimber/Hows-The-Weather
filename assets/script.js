@@ -10,7 +10,7 @@ var lon;
 async function getCoords(entry) {
     console.log("fetching city coordinates...");
 
-    let requestUrl = `http://api.openweathermap.org/geo/1.0/direct?q=${entry}&limit=5&appid=${apiKey}`;
+    let requestUrl = `https://api.openweathermap.org/geo/1.0/direct?q=${entry}&limit=5&appid=${apiKey}`;
 
     try {
         const response = await fetch(requestUrl);
